@@ -3,3 +3,5 @@ torchvision
 transformers
 faiss-cpu
 pillow
+lancedb
+typer
