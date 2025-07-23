@@ -7,25 +7,25 @@ This script demonstrates various ways to query the database.
 import lancedb
 import numpy as np
 from pathlib import Path
+import typer
 
-def query_database(db_path, table_name):
+def query_database(db_path: str, table_name: str):
     """Query the LanceDB database with various examples."""
     
     # Connect to database
     db = lancedb.connect(db_path)
     print(f"📊 Database: {db_path}")
-    print(f"📋 Tables: {db.table_names()}")
-    
+    print(f"📋 Tables: {db.table_names()}")    
     # Open the images table
     table = db.open_table(table_name)
     print(f"\n📈 Table '{table_name}' has {table.count_rows()} rows")
     print(f"🔍 Schema: {table.schema}")
     
-    # Get first 10 records and print
+    # Get first 11 records and print
     print("\n" + "="*50)
-    print("FIRST 10 RECORDS")
+    print("FIRST 1 RECORDS")
     print("="*50)
-    first_10 = table.to_pandas().head(10)
+    first_10 = table.to_pandas().head(1)
     for i, record in first_10.iterrows():
         print(f"\nRecord {i+1}:")
         print(f"  File: {record['file_name']}")
@@ -122,8 +122,18 @@ def query_database(db_path, table_name):
         print(f"  - {record['file_name']}")
     '''
 
-if __name__ == "__main__":
-    # Query the database
-    query_database(db_path="dbs/image_embeddings.lance", table_name="images")
+def main(
+    db_path: str = typer.Option(..., "--db-path", help="Path to the LanceDB database file."),
+    table_name: str = typer.Option(..., "--table-name", help="Name of the table to query")
+):
+    """
+    Query a LanceDB image embeddings database.
     
-    print("\n✅ Database query completed!") 
+    This script demonstrates various ways to query the database and displays
+    information about the stored image embeddings.
+    """
+    query_database(db_path=db_path, table_name=table_name)
+    print("\n✅ Database query completed!")
+
+if __name__ == "__main__":
+    typer.run(main) 
