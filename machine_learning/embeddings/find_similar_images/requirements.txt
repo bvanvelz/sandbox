@@ -1,8 +1,7 @@
-# torch
-# torchvision
-# transformers
-# faiss-cpu
+torch
+transformers
 pillow
 lancedb
 typer
 pandas
+sklearn
