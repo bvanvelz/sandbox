@@ -20,9 +20,14 @@ class ImageEmbedder:
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         
         # Load CLIP model for image embeddings
-        print(f"Loading CLIP model on {self.device}...")
-        self.model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
-        self.processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+        print(f"Loading OpenCLIP model on {self.device}...")
+        # Old model: "openai/clip-vit-base-patch32" (512d embeddings)
+        # self.model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
+        # self.processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+        
+        # New model: OpenCLIP ViT-L/14 (768d embeddings, better performance)
+        self.model = CLIPModel.from_pretrained("laion/CLIP-ViT-L-14-laion2B-s32B-b82K")
+        self.processor = CLIPProcessor.from_pretrained("laion/CLIP-ViT-L-14-laion2B-s32B-b79K")
         self.model.to(self.device)
         
         # Connect to LanceDB
@@ -187,8 +192,8 @@ class ImageEmbedder:
                 "created_time": "sample",
                 "modified_time": "sample",
                 "processed_time": "sample",
-                "embedding": np.zeros(512, dtype=np.float32).tolist(),
-                "embedding_dim": 512
+                "embedding": np.zeros(768, dtype=np.float32).tolist(),  # Updated to 768d for new model
+                "embedding_dim": 768  # Updated to 768d for new model
             }]
             table = self.db.create_table(table_name, data=sample_data)
             print(f"Created table '{table_name}'")
@@ -219,7 +224,7 @@ class ImageEmbedder:
             for row in data:
                 import numpy as np
                 emb = np.asarray(row["embedding"], dtype=np.float32)
-                if emb.shape[0] != 512:
+                if emb.shape[0] != 768:  # Updated to 768d for new model
                     raise ValueError(f"Embedding has wrong shape: {emb.shape}")
                 row["embedding"] = emb.tolist()
                 if row["file_hash"] not in existing_hashes:
