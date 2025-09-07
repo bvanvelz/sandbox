@@ -21,13 +21,15 @@ class ImageEmbedder:
         
         # Load CLIP model for image embeddings
         print(f"Loading OpenCLIP model on {self.device}...")
+
         # Old model: "openai/clip-vit-base-patch32" (512d embeddings)
         # self.model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
         # self.processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
         
         # New model: OpenCLIP ViT-L/14 (768d embeddings, better performance)
         self.model = CLIPModel.from_pretrained("laion/CLIP-ViT-L-14-laion2B-s32B-b82K")
-        self.processor = CLIPProcessor.from_pretrained("laion/CLIP-ViT-L-14-laion2B-s32B-b79K")
+        self.processor = CLIPProcessor.from_pretrained("laion/CLIP-ViT-L-14-laion2B-s32B-b82K")
+
         self.model.to(self.device)
         
         # Connect to LanceDB
