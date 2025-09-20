@@ -11,6 +11,7 @@ INDEX_PATH = './index.faiss'
 
 # 1. Load CLIP model
 model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
+# TODO: model ViT-H/14 (LAION) -  state-of-the-art similarity retrieval, but heavier.
 processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model.to(device)
